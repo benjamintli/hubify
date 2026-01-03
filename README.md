@@ -22,18 +22,18 @@ After installation, you can use the `coco2hf` command:
 
 ```bash
 # Auto-detect annotations in train/validation/test directories
-coco2hf --data-dir /path/to/coco2017
+coco2hf --data-dir /path/to/images
 
 # Manually specify annotation files
-coco2hf --data-dir /path/to/coco2017 \
+coco2hf --data-dir /path/to/images \
   --train-annotations /path/to/instances_train2017.json \
   --validation-annotations /path/to/instances_val2017.json
 
 # Generate sample visualizations
-coco2hf --data-dir /path/to/coco2017 --visualize
+coco2hf --data-dir /path/to/images --visualize
 
 # Push to HuggingFace Hub
-coco2hf --data-dir /path/to/coco2017 \
+coco2hf --data-dir /path/to/images \
   --train-annotations /path/to/instances_train2017.json \
   --push-to-hub username/my-coco-dataset
 ```
@@ -42,7 +42,7 @@ Or run directly with Python (from the virtual environment):
 
 ```bash
 source .venv/bin/activate
-python -m src.main --data-dir /path/to/coco2017
+python -m src.main --data-dir /path/to/images
 ```
 
 ## Expected Directory Structure
