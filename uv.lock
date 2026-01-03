@@ -219,7 +219,6 @@ dependencies = [
     { name = "pillow" },
     { name = "rich" },
     { name = "ruff" },
-    { name = "tqdm" },
 ]
 
 [package.optional-dependencies]
@@ -235,7 +234,6 @@ requires-dist = [
     { name = "rich", specifier = ">=13.9.4" },
     { name = "ruff", specifier = ">=0.14.10" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.10" },
-    { name = "tqdm", specifier = ">=4.67.1" },
 ]
 provides-extras = ["dev"]
 
