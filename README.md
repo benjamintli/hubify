@@ -1,10 +1,19 @@
-# COCO to HuggingFace Format Converter
+# Hubify
 
 ![Test & Lint](https://github.com/benjamintli/coco2hf/workflows/Test%20%26%20Lint/badge.svg)
 ![CLI Smoke Test](https://github.com/benjamintli/coco2hf/workflows/CLI%20Smoke%20Test/badge.svg)
 
+Convert object detection datasets to HuggingFace format and upload to the Hub.
 
-Convert COCO format annotations to HuggingFace dataset metadata format (JSONL).
+**Currently supported formats:**
+- COCO format annotations
+
+**Coming soon:** YOLO, Pascal VOC, Labelme, and more!
+
+## Motivations for this tool
+HuggingFace  has become the defacto *open source* community to upload datasets and models. It's primarily about LLMs and language models, but there's nothing about HuggingFace's dataset hosting that's specific to language modeling.
+
+This tool is meant to be a way to consolidate the different formats from the object detection domain (COCO, Pascal VOC, etc) into what HuggingFace suggests for their Image Datasets, and upload it to HuggingFace Hub.
 
 ## Installation
 
@@ -18,24 +27,24 @@ pip install -e .
 
 ## Usage
 
-After installation, you can use the `coco2hf` command:
+After installation, you can use the `hubify` command:
 
 ```bash
 # Auto-detect annotations in train/validation/test directories
-coco2hf --data-dir /path/to/images
+hubify --data-dir /path/to/images
 
 # Manually specify annotation files
-coco2hf --data-dir /path/to/images \
+hubify --data-dir /path/to/images \
   --train-annotations /path/to/instances_train2017.json \
   --validation-annotations /path/to/instances_val2017.json
 
 # Generate sample visualizations
-coco2hf --data-dir /path/to/images --visualize
+hubify --data-dir /path/to/images --visualize
 
 # Push to HuggingFace Hub
-coco2hf --data-dir /path/to/images \
+hubify --data-dir /path/to/images \
   --train-annotations /path/to/instances_train2017.json \
-  --push-to-hub username/my-coco-dataset
+  --push-to-hub username/my-dataset
 ```
 
 Or run directly with Python (from the virtual environment):
@@ -47,6 +56,7 @@ python -m src.main --data-dir /path/to/images
 
 ## Expected Directory Structure
 
+* For coco:
 ```
 data-dir/
 ├── train/

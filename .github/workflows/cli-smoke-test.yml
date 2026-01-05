@@ -25,7 +25,7 @@ jobs:
       run: uv pip install --system -e .
 
     - name: Test CLI installation
-      run: coco2hf --help
+      run: hubify --help
 
     - name: Test Python imports
       run: |

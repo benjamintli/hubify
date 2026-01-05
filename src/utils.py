@@ -175,6 +175,64 @@ def load_dataset_helper(data_dir: Path, annotation_file: Path):
     return dataset
 
 
+def create_dataset_card(data_dir: Path, categories: dict, splits: list[str], repo_id: str | None = None) -> str:
+    """Create a README.md dataset card for HuggingFace Hub.
+
+    Args:
+        data_dir: Root directory where README.md will be written
+        categories: Dictionary mapping category IDs to names
+        splits: List of split names (e.g., ['train', 'validation'])
+        repo_id: Optional repo ID to replace REPO_ID placeholder in usage example
+
+    Returns:
+        The README content as a string
+    """
+    repo_placeholder = repo_id if repo_id else "REPO_ID"
+
+    readme_content = f"""---
+license: unknown
+task_categories:
+- object-detection
+---
+
+# Dataset Card
+
+> **🚀 Uploaded using [hubify](https://github.com/benjamintli/hubify)** - Convert object detection datasets to HuggingFace format
+
+This dataset contains object detection annotations converted to HuggingFace image dataset format.
+
+## 📊 Dataset Details
+
+- **🏷️ Number of classes**: {len(categories)}
+- **📁 Splits**: {', '.join(splits)}
+- **🖼️ Format**: Images with bounding box annotations
+
+## 🎯 Classes
+
+The dataset contains the following {len(categories)} classes:
+
+{chr(10).join(f"- {name}" for name in categories.values())}
+
+## 💻 Usage
+
+```python
+from datasets import load_dataset
+
+dataset = load_dataset("{repo_placeholder}")
+```
+
+---
+
+*Converted and uploaded with ❤️ using [hubify](https://github.com/benjamintli/hubify)*
+"""
+
+    readme_path = data_dir / "README.md"
+    readme_path.write_text(readme_content)
+    console.print(f"  [green]✓[/green] Created dataset card at [cyan]{readme_path}[/cyan]")
+
+    return readme_content
+
+
 def get_hf_token(token_arg: str | None) -> str | None:
     """Get HuggingFace token from args, environment, or huggingface-cli.
 

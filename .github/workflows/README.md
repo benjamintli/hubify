@@ -17,7 +17,7 @@ Runs on every push and pull request to `main`.
 
 **What it does:**
 - Installs the package
-- Tests that the `coco2hf` CLI command works
+- Tests that the `hubify` CLI command works
 - Verifies all main imports are functional
 - Displays Python version info
 
@@ -36,5 +36,5 @@ ruff format --check .
 ruff format .
 
 # Test CLI
-coco2hf --help
+hubify --help
 ```

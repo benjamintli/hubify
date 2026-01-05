@@ -7,6 +7,7 @@ from rich.panel import Panel
 from src.utils import (
     auto_detect_splits,
     coco_to_metadata,
+    create_dataset_card,
     get_hf_token,
     visualize_sample,
 )
@@ -15,9 +16,9 @@ console = Console()
 
 
 def main():
-    """Main entry point for the COCO to HuggingFace format converter."""
+    """Main entry point for hubify - convert object detection datasets to HuggingFace format."""
     parser = argparse.ArgumentParser(
-        description="Convert COCO format annotations to HuggingFace metadata JSONL files"
+        description="Convert object detection datasets (COCO, YOLO, Pascal VOC, etc.) to HuggingFace format"
     )
     parser.add_argument(
         "--data-dir",
@@ -62,8 +63,8 @@ def main():
     console.print()
     console.print(
         Panel.fit(
-            "[bold cyan]COCO → HuggingFace Converter[/bold cyan]\n"
-            "[dim]Convert COCO annotations to HF dataset format[/dim]",
+            "[bold cyan]Hubify[/bold cyan]\n"
+            "[dim]Convert object detection datasets to HuggingFace format[/dim]",
             border_style="cyan",
         )
     )
@@ -89,6 +90,8 @@ def main():
 
     # Process each split
     processed_count = 0
+    all_categories = {}
+    processed_splits = []
     for split_name, coco_path in annotations.items():
         if coco_path is None:
             continue
@@ -105,7 +108,10 @@ def main():
         split_dir.mkdir(parents=True, exist_ok=True)
         out_path = split_dir / "metadata.jsonl"
         categories = coco_to_metadata(coco_path, out_path)
+        if not all_categories:
+            all_categories = categories
         processed_count += 1
+        processed_splits.append(split_name)
         console.print(f"[green]✓[/green] Wrote metadata to [cyan]{out_path}[/cyan]")
 
         # Optionally visualize a sample
@@ -204,12 +210,27 @@ def main():
             )
             exit(1)
 
+        # Create dataset card with marketing message
+        console.print("[cyan]📝 Creating dataset card...[/cyan]")
+        readme_content = create_dataset_card(
+            args.data_dir, all_categories, processed_splits, args.push_to_hub
+        )
+
         # Push the already-loaded dataset
         console.print(
             f"[cyan]⬆️  Pushing dataset to [bold]{args.push_to_hub}[/bold]...[/cyan]"
         )
         dataset.push_to_hub(args.push_to_hub, token=token, private=False)
         console.print("[green]✓ Dataset successfully pushed![/green]")
+
+        # Push the README using RepoCard
+        console.print("[cyan]📄 Uploading dataset card to Hub...[/cyan]")
+        from huggingface_hub import RepoCard
+
+        card = RepoCard(readme_content)
+        card.push_to_hub(args.push_to_hub, repo_type="dataset", token=token)
+        console.print("[green]✓ Dataset card successfully uploaded![/green]")
+
         console.print(
             f"[cyan]🔗 View at: https://huggingface.co/datasets/{args.push_to_hub}[/cyan]"
         )
